@@ -10,30 +10,44 @@ class Pac_Man:
 
     def __init__(self):
         self.running = True
-        self.state = 'intro'
+        self.state = 'start'
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
 
     def run(self):
         while self.running:
-            if self.state == 'intro':
-                self.intro_events()
-                self.intro_update()
-                self.intro_draw()
+            if self.state == 'start':
+                self.start_events()
+                self.start_update()
+                self.start_draw()
             else:
                 pass
             self.clock.tick(FPS)
         pygame.quit()
         sys.exit()
 
-    def intro_events(self):
+    def start_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                self.state = 'playing'
 
-    def intro_update(self):
+    def start_update(self):
         pass
 
-    def intro_draw(self):
+    def start_draw(self):
+        self.screen.fill(BLACK)
+        self.draw_text(self.screen, 'PUSH SPACE TO START', [WIDTH/2, HEIGHT/2],
+                       START_TEXT_SIZE, (170, 132, 58), START_FONT)
         pygame.display.update()
+
+    def draw_text(self, screen, text, position, size, color, font_name):
+        font = pygame.font.SysFont(font_name, size)
+        text_word = font.render(text, False, color)
+        text_word_size = text_word.get_size()
+        position[0] = position[0] - text_word_size[0] / 2
+        position[1] = position[1] - text_word_size[1] / 2
+        screen.blit(text_word, position)
+
 
