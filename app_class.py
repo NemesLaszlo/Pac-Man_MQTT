@@ -13,6 +13,11 @@ class Pac_Man:
         self.state = 'start'
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
+        self.background = pygame.image.load('maze.png')
+        self.cell_width = WIDTH // 28
+        self.cell_height = HEIGHT // 30
+
+        self.load_maze()
 
     def run(self):
         while self.running:
@@ -29,6 +34,18 @@ class Pac_Man:
             self.clock.tick(FPS)
         pygame.quit()
         sys.exit()
+
+    def load_maze(self):
+        self.background = pygame.transform.scale(self.background, (WIDTH, HEIGHT))
+
+    def draw_grid(self):
+        for i in range(WIDTH // self.cell_width):
+            pygame.draw.line(self.screen, GREY, (i * self.cell_width, 0),
+                             (i * self.cell_width, HEIGHT))
+
+        for i in range(HEIGHT // self.cell_height):
+            pygame.draw.line(self.screen, GREY, (0, i*self.cell_height),
+                             (WIDTH, i*self.cell_height))
 
     def draw_text(self, screen, text, position, size, color, font_name, centered=False):
         font = pygame.font.SysFont(font_name, size)
@@ -68,8 +85,12 @@ class Pac_Man:
         pass
 
     def playing_draw(self):
-        self.screen.fill(RED)
+        self.screen.blit(self.background, (0, 0))
+        self.draw_grid()
         pygame.display.update()
+
+
+
 
 
 
