@@ -46,16 +46,16 @@ class Pac_Man:
                              (i * self.cell_width, HEIGHT))
 
         for i in range(HEIGHT // self.cell_height):
-            pygame.draw.line(self.background, GREY, (0, i*self.cell_height),
-                             (WIDTH, i*self.cell_height))
+            pygame.draw.line(self.background, GREY, (0, i * self.cell_height),
+                             (WIDTH, i * self.cell_height))
 
     def draw_text(self, screen, text, position, size, color, font_name, centered=False):
         font = pygame.font.SysFont(font_name, size)
         text_word = font.render(text, False, color)
         text_word_size = text_word.get_size()
         if centered:
-            position[0] = position[0] - text_word_size[0] / 2
-            position[1] = position[1] - text_word_size[1] / 2
+            position[0] = position[0] - text_word_size[0] // 2
+            position[1] = position[1] - text_word_size[1] // 2
         screen.blit(text_word, position)
 
     def start_events(self):
@@ -70,9 +70,9 @@ class Pac_Man:
 
     def start_draw(self):
         self.screen.fill(BLACK)
-        self.draw_text(self.screen, 'PUSH SPACE TO START', [WIDTH/2, HEIGHT/2],
+        self.draw_text(self.screen, 'PUSH SPACE TO START', [WIDTH // 2, HEIGHT // 2],
                        START_TEXT_SIZE, (170, 132, 58), START_FONT, centered=True)
-        self.draw_text(self.screen, '1 PLAYER ONLY', [WIDTH / 2, HEIGHT / 2 + 50],
+        self.draw_text(self.screen, '1 PLAYER ONLY', [WIDTH // 2, HEIGHT // 2 + 50],
                        START_TEXT_SIZE, (33, 137, 156), START_FONT, centered=True)
         self.draw_text(self.screen, 'HIGH SCORE', [4, 0],
                        START_TEXT_SIZE, (255, 255, 255), START_FONT)
@@ -82,24 +82,26 @@ class Pac_Man:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    self.player.move(vec(-1, 0))
+                if event.key == pygame.K_RIGHT:
+                    self.player.move(vec(1, 0))
+                if event.key == pygame.K_UP:
+                    self.player.move(vec(0, -1))
+                if event.key == pygame.K_DOWN:
+                    self.player.move(vec(0, 1))
 
     def playing_update(self):
-        pass
+        self.player.update()
 
     def playing_draw(self):
         self.screen.fill(BLACK)
-        self.screen.blit(self.background, (TOP_BOTTOM_BUFFER / 2, TOP_BOTTOM_BUFFER / 2))
+        self.screen.blit(self.background, (TOP_BOTTOM_BUFFER // 2, TOP_BOTTOM_BUFFER // 2))
         self.draw_grid()
         self.draw_text(self.screen, 'CURRENT SCORE: 0', [60, 0],
                        18, (255, 255, 255), START_FONT, centered=False)
-        self.draw_text(self.screen, 'HIGH SCORE: 0', [WIDTH / 2 + 60, 0],
+        self.draw_text(self.screen, 'HIGH SCORE: 0', [WIDTH // 2 + 60, 0],
                        18, (255, 255, 255), START_FONT, centered=False)
         self.player.draw()
         pygame.display.update()
-
-
-
-
-
-
-
