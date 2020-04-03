@@ -1,6 +1,7 @@
 import pygame
 import sys
 from settings import *
+from player import Player
 
 pygame.init()
 vec = pygame.math.Vector2
@@ -16,6 +17,7 @@ class Pac_Man:
         self.background = pygame.image.load('maze.png')
         self.cell_width = MAZE_WIDTH // 28
         self.cell_height = MAZE_HEIGHT // 30
+        self.player = Player(self, PLAYER_START_POSITION)
 
         self.load_maze()
 
@@ -92,6 +94,7 @@ class Pac_Man:
                        18, (255, 255, 255), START_FONT, centered=False)
         self.draw_text(self.screen, 'HIGH SCORE: 0', [WIDTH / 2 + 60, 0],
                        18, (255, 255, 255), START_FONT, centered=False)
+        self.player.draw()
         pygame.display.update()
 
 
