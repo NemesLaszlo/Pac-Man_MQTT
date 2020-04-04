@@ -124,7 +124,7 @@ class Pac_Man:
         # self.draw_grid()  # draw the grid on the picture map
         # self.draw_walls()  # draw the walls on the picture map
         self.draw_coins()
-        self.draw_text(self.screen, 'CURRENT SCORE: 0', [60, 0],
+        self.draw_text(self.screen, 'CURRENT SCORE: {}'.format(self.player.current_score), [60, 0],
                        18, (255, 255, 255), START_FONT, centered=False)
         self.draw_text(self.screen, 'HIGH SCORE: 0', [WIDTH // 2 + 60, 0],
                        18, (255, 255, 255), START_FONT, centered=False)

@@ -11,6 +11,7 @@ class Player:
         self.grid_position = position  # position is a player start position from player init
         self.pix_position = self.get_pix_position()
         self.direction = vec(1, 0)
+        self.current_score = 0
         self.stored_direction = None
         self.able_to_move = True
 
@@ -30,6 +31,10 @@ class Player:
         # following the player circle on grid - tracking the movement
         self.grid_position[0] = (self.pix_position[0] - TOP_BOTTOM_BUFFER + self.app.cell_width // 2) // self.app.cell_width + 1
         self.grid_position[1] = (self.pix_position[1] - TOP_BOTTOM_BUFFER + self.app.cell_height // 2) // self.app.cell_height + 1
+
+        # check the actual grid position, and if there it has a coin, the player "eat" that
+        if self.on_coin():
+            self.eat_coin()
 
     def draw(self):
         # player circle
@@ -59,3 +64,13 @@ class Player:
             if vec(self.grid_position + self.direction) == wall:
                 return False
         return True
+
+    def on_coin(self):
+        if self.grid_position in self.app.coins:
+            return True
+        return False
+
+    def eat_coin(self):
+        self.app.coins.remove(self.grid_position)
+        self.current_score += 1
+
