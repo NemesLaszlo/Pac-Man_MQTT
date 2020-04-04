@@ -47,10 +47,6 @@ class Pac_Man:
                 for x_index, char in enumerate(line):
                     if char == "1":
                         self.walls.append(vec(x_index, y_index))
-            print(len(self.walls))
-
-
-
 
     def draw_grid(self):
         for i in range(WIDTH // self.cell_width):
@@ -60,6 +56,12 @@ class Pac_Man:
         for i in range(HEIGHT // self.cell_height):
             pygame.draw.line(self.background, GREY, (0, i * self.cell_height),
                              (WIDTH, i * self.cell_height))
+
+    def draw_walls(self):
+        for wall in self.walls:
+            pygame.draw.rect(self.background, (255, 255, 255),
+                             (wall.x * self.cell_width,
+                              wall.y * self.cell_height, self.cell_width, self.cell_height))
 
     def draw_text(self, screen, text, position, size, color, font_name, centered=False):
         font = pygame.font.SysFont(font_name, size)
@@ -110,7 +112,8 @@ class Pac_Man:
     def playing_draw(self):
         self.screen.fill(BLACK)
         self.screen.blit(self.background, (TOP_BOTTOM_BUFFER // 2, TOP_BOTTOM_BUFFER // 2))
-        self.draw_grid()
+        # self.draw_grid()  # draw the grid on the picture map
+        # self.draw_walls() # draw the walls on the picture map
         self.draw_text(self.screen, 'CURRENT SCORE: 0', [60, 0],
                        18, (255, 255, 255), START_FONT, centered=False)
         self.draw_text(self.screen, 'HIGH SCORE: 0', [WIDTH // 2 + 60, 0],
