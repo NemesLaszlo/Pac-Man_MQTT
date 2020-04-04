@@ -16,8 +16,3 @@ PLAYER_COLOR = (190, 194, 15)
 # string settings
 START_TEXT_SIZE = 16
 START_FONT = "arial black"
-
-# player settings
-PLAYER_START_POSITION = vec(1, 1)
-
-# mob settings

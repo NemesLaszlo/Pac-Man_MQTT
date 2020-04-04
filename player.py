@@ -66,7 +66,7 @@ class Player:
         return True
 
     def on_coin(self):
-        if self.grid_position in self.app.coins:
+        if self.grid_position in self.app.coins and self.move_next_position():
             return True
         return False
 

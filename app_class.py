@@ -19,9 +19,11 @@ class Pac_Man:
         self.cell_height = MAZE_HEIGHT // 30
         self.walls = []
         self.coins = []
-        self.player = Player(self, PLAYER_START_POSITION)
+        self.player_pos = None
 
         self.load_maze_and_walls()
+
+        self.player = Player(self, self.player_pos)
 
     def run(self):
         while self.running:
@@ -43,6 +45,7 @@ class Pac_Man:
         self.background = pygame.transform.scale(self.background, (MAZE_WIDTH, MAZE_HEIGHT))
 
         # walls and coins list with coordinates of walls and coins
+        # plus player position from file
         with open("walls.txt", "r") as file:
             for y_index, line in enumerate(file):
                 for x_index, char in enumerate(line):
@@ -50,6 +53,8 @@ class Pac_Man:
                         self.walls.append(vec(x_index, y_index))
                     elif char == "C":
                         self.coins.append(vec(x_index, y_index))
+                    elif char == "P":
+                        self.player_pos = vec(x_index, y_index)
 
     def draw_grid(self):
         for i in range(WIDTH // self.cell_width):
