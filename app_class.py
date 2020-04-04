@@ -18,6 +18,7 @@ class Pac_Man:
         self.cell_width = MAZE_WIDTH // 28
         self.cell_height = MAZE_HEIGHT // 30
         self.walls = []
+        self.coins = []
         self.player = Player(self, PLAYER_START_POSITION)
 
         self.load_maze_and_walls()
@@ -41,12 +42,14 @@ class Pac_Man:
     def load_maze_and_walls(self):
         self.background = pygame.transform.scale(self.background, (MAZE_WIDTH, MAZE_HEIGHT))
 
-        # walls list with coordinates of walls
+        # walls and coins list with coordinates of walls and coins
         with open("walls.txt", "r") as file:
             for y_index, line in enumerate(file):
                 for x_index, char in enumerate(line):
                     if char == "1":
                         self.walls.append(vec(x_index, y_index))
+                    elif char == "C":
+                        self.coins.append(vec(x_index, y_index))
 
     def draw_grid(self):
         for i in range(WIDTH // self.cell_width):
@@ -62,6 +65,12 @@ class Pac_Man:
             pygame.draw.rect(self.background, (255, 255, 255),
                              (wall.x * self.cell_width,
                               wall.y * self.cell_height, self.cell_width, self.cell_height))
+
+    def draw_coins(self):
+        for coin in self.coins:
+            pygame.draw.circle(self.screen, (124, 123, 7),
+                               (int(coin.x * self.cell_width) + self.cell_width // 2 + TOP_BOTTOM_BUFFER // 2,
+                                int(coin.y * self.cell_height) + self.cell_height // 2 + TOP_BOTTOM_BUFFER // 2), 5)
 
     def draw_text(self, screen, text, position, size, color, font_name, centered=False):
         font = pygame.font.SysFont(font_name, size)
@@ -113,7 +122,8 @@ class Pac_Man:
         self.screen.fill(BLACK)
         self.screen.blit(self.background, (TOP_BOTTOM_BUFFER // 2, TOP_BOTTOM_BUFFER // 2))
         # self.draw_grid()  # draw the grid on the picture map
-        # self.draw_walls() # draw the walls on the picture map
+        # self.draw_walls()  # draw the walls on the picture map
+        self.draw_coins()
         self.draw_text(self.screen, 'CURRENT SCORE: 0', [60, 0],
                        18, (255, 255, 255), START_FONT, centered=False)
         self.draw_text(self.screen, 'HIGH SCORE: 0', [WIDTH // 2 + 60, 0],
