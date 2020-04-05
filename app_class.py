@@ -28,7 +28,7 @@ class Pac_Man:
         self.load_maze_and_walls_positions()
 
         # first parameter -> self is a Pac-Man app class
-        self.player = Player(self, copy.copy(self.player_pos))
+        self.player = Player(self, vec(self.player_pos))
 
         self.make_enemies()
 
@@ -42,6 +42,10 @@ class Pac_Man:
                 self.playing_events()
                 self.playing_update()
                 self.playing_draw()
+            elif self.state == 'game over':
+                self.game_over_events()
+                self.game_over_update()
+                self.game_over_draw()
             else:
                 self.running = False
             self.clock.tick(FPS)
@@ -67,20 +71,24 @@ class Pac_Man:
                     elif char == "P":
                         self.player_pos = [x_index, y_index]
                     elif char in ["2", "3", "4", "5"]:
-                        self.enemies_pos[char] = vec(x_index, y_index)
+                        self.enemies_pos[char] = [x_index, y_index]
 
     def make_enemies(self):
         for key, value in self.enemies_pos.items():
-            self.enemies.append(Enemy(self, key, value))
+            self.enemies.append(Enemy(self, key, vec(value)))
 
     def remove_life(self):
         self.player.lives -= 1
         if self.player.lives == 0:
             self.state = "game over"
         else:
-            self.player.grid_position = vec(self.player_pos)
+            self.player.grid_position = vec(self.player.starting_position)
             self.player.pix_position = self.player.get_pix_position()
             self.player.direction *= 0
+            for enemy in self.enemies:
+                enemy.grid_position = vec(enemy.starting_position)
+                enemy.pix_position = enemy.get_pix_position()
+                enemy.direction *= 0
 
     def draw_grid(self):
         for i in range(WIDTH // self.cell_width):
@@ -112,6 +120,26 @@ class Pac_Man:
             position[1] = position[1] - text_word_size[1] // 2
         screen.blit(text_word, position)
 
+    def reset(self):
+        self.player.lives = 3
+        self.player.current_score = 0
+        self.player.grid_position = vec(self.player.starting_position)
+        self.player.pix_position = self.player.get_pix_position()
+        self.player.direction *= 0
+
+        for enemy in self.enemies:
+            enemy.grid_position = vec(enemy.starting_position)
+            enemy.pix_position = enemy.get_pix_position()
+            enemy.direction *= 0
+
+        self.coins = []
+        with open("walls.txt", "r") as file:
+            for y_index, line in enumerate(file):
+                for x_index, char in enumerate(line):
+                    if char == "C":
+                        self.coins.append(vec(x_index, y_index))
+        self.state = "playing"
+
     def start_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -128,8 +156,6 @@ class Pac_Man:
                        START_TEXT_SIZE, (170, 132, 58), START_FONT, centered=True)
         self.draw_text(self.screen, '1 PLAYER ONLY', [WIDTH // 2, HEIGHT // 2 + 50],
                        START_TEXT_SIZE, (33, 137, 156), START_FONT, centered=True)
-        self.draw_text(self.screen, 'HIGH SCORE', [4, 0],
-                       START_TEXT_SIZE, (255, 255, 255), START_FONT)
         pygame.display.update()
 
     def playing_events(self):
@@ -163,9 +189,29 @@ class Pac_Man:
         self.draw_coins()
         self.draw_text(self.screen, 'CURRENT SCORE: {}'.format(self.player.current_score), [60, 0],
                        18, (255, 255, 255), START_FONT, centered=False)
-        self.draw_text(self.screen, 'HIGH SCORE: 0', [WIDTH // 2 + 60, 0],
-                       18, (255, 255, 255), START_FONT, centered=False)
         self.player.draw()
         for enemy in self.enemies:
             enemy.draw()
+        pygame.display.update()
+
+    def game_over_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                self.reset()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.running = False
+
+    def game_over_update(self):
+        pass
+
+    def game_over_draw(self):
+        self.screen.fill(BLACK)
+        self.draw_text(self.screen, 'GAME OVER', [WIDTH // 2, 100],
+                       36, RED, START_FONT, centered=True)
+        self.draw_text(self.screen, 'SPACE TO RESTART', [WIDTH // 2, HEIGHT // 2 + 50],
+                       START_TEXT_SIZE, (170, 132, 58), START_FONT, centered=True)
+        self.draw_text(self.screen, 'ESCAPE TO QUIT', [WIDTH // 2, HEIGHT // 2 + 100],
+                       START_TEXT_SIZE, (33, 137, 156), START_FONT, centered=True)
         pygame.display.update()

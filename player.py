@@ -8,14 +8,15 @@ class Player:
 
     def __init__(self, app, position):
         self.app = app
-        self.grid_position = vec(position[0], position[1])  # position is a player start position from player init
+        self.grid_position = position  # position is a player start position from player init
         self.pix_position = self.get_pix_position()
+        self.starting_position = [position.x, position.y]
         self.direction = vec(1, 0)
         self.speed = 2
         self.current_score = 0
         self.stored_direction = None
         self.able_to_move = True
-        self.lives = 3
+        self.lives = 1
 
     def update(self):
         if self.able_to_move:

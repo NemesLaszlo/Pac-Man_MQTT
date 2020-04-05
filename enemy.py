@@ -12,6 +12,7 @@ class Enemy:
         self.key = key
         self.grid_position = position
         self.pix_position = self.get_pix_position()
+        self.starting_position = [position.x, position.y]
         self.color = self.set_color()
         self.direction = vec(0, 0)  # when the game start not moving at all
         self.personality = self.set_personality()
