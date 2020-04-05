@@ -67,6 +67,12 @@ class Enemy:
     def move(self):
         if self.personality == "random":
             self.direction = self.get_random_direction()
+        if self.personality == "slow":
+            self.direction = self.get_path_direction()
+        if self.personality == "speedy":
+            self.direction = self.get_path_direction()
+        if self.personality == "scared":
+            self.direction = self.get_path_direction()
 
     def get_random_direction(self):
         while True:
@@ -84,6 +90,47 @@ class Enemy:
                 break
         return vec(x_dir, y_dir)
 
+    def get_path_direction(self):
+        next_cell = self.find_next_cell_in_path()
+        x_dir = next_cell[0] - self.grid_position[0]
+        y_dir = next_cell[1] - self.grid_position[1]
+        return vec(x_dir, y_dir)
 
-            
+    def find_next_cell_in_path(self):
+        path = self.breadth_first_search([int(self.grid_position.x), int(self.grid_position.y)],
+                                         [int(self.app.player.grid_position.x), int(self.app.player.grid_position.y)])
+        return path[1]
 
+    def breadth_first_search(self, start, target):
+        grid = [[0 for x in range(28)] for x in range(30)]
+
+        for cell in self.app.walls:
+            if cell.x < 28 and cell.y < 30:
+                grid[int(cell.y)][int(cell.x)] = 1
+        queue = [start]
+        path = []
+        visited = []
+        while queue:
+            current = queue[0]
+            queue.remove(queue[0])
+            visited.append(current)
+            if current == target:
+                break
+            else:
+                neighbours = [[0, -1], [1, 0], [0, 1], [-1, 0]]
+                for neighbour in neighbours:
+                    if 1 <= neighbour[0] + current[0] < len(grid[0]):
+                        if 1 <= neighbour[1] + current[1] < len(grid):
+                            next_cell = [neighbour[0] + current[0], neighbour[1] + current[1]]
+                            if next_cell not in visited:
+                                # not a wall
+                                if grid[next_cell[1]][next_cell[0]] != 1:
+                                    queue.append(next_cell)
+                                    path.append({"Current": current, "Next": next_cell})
+        shortest = [target]
+        while target != start:
+            for step in path:
+                if step["Next"] == target:
+                    target = step["Current"]
+                    shortest.insert(0, step["Current"])
+        return shortest
