@@ -1,5 +1,6 @@
 import pygame
 import sys
+import copy
 from settings import *
 from player import Player
 from enemy import Enemy
@@ -27,7 +28,7 @@ class Pac_Man:
         self.load_maze_and_walls_positions()
 
         # first parameter -> self is a Pac-Man app class
-        self.player = Player(self, self.player_pos)
+        self.player = Player(self, copy.copy(self.player_pos))
 
         self.make_enemies()
 
@@ -64,13 +65,22 @@ class Pac_Man:
                     elif char == "C":
                         self.coins.append(vec(x_index, y_index))
                     elif char == "P":
-                        self.player_pos = vec(x_index, y_index)
+                        self.player_pos = [x_index, y_index]
                     elif char in ["2", "3", "4", "5"]:
                         self.enemies_pos[char] = vec(x_index, y_index)
 
     def make_enemies(self):
         for key, value in self.enemies_pos.items():
             self.enemies.append(Enemy(self, key, value))
+
+    def remove_life(self):
+        self.player.lives -= 1
+        if self.player.lives == 0:
+            self.state = "game over"
+        else:
+            self.player.grid_position = vec(self.player_pos)
+            self.player.pix_position = self.player.get_pix_position()
+            self.player.direction *= 0
 
     def draw_grid(self):
         for i in range(WIDTH // self.cell_width):
@@ -140,6 +150,10 @@ class Pac_Man:
         self.player.update()
         for enemy in self.enemies:
             enemy.update()
+
+        for enemy in self.enemies:
+            if enemy.grid_position == self.player.grid_position:
+                self.remove_life()
 
     def playing_draw(self):
         self.screen.fill(BLACK)

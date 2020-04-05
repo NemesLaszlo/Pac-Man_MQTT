@@ -13,7 +13,7 @@ class Enemy:
         self.grid_position = position
         self.pix_position = self.get_pix_position()
         self.color = self.set_color()
-        self.direction = vec(1, 0)  # when the game start not moving at all
+        self.direction = vec(0, 0)  # when the game start not moving at all
         self.personality = self.set_personality()
         self.target = None
         self.speed = self.set_speed()
@@ -81,10 +81,10 @@ class Enemy:
     # move next position check
     def move_next_position(self):
         if int(self.pix_position.x + TOP_BOTTOM_BUFFER // 2) % self.app.cell_width == 0:
-            if self.direction == vec(1, 0) or self.direction == vec(-1, 0):
+            if self.direction == vec(1, 0) or self.direction == vec(-1, 0) or self.direction == vec(0, 0):
                 return True
         if int(self.pix_position.y + TOP_BOTTOM_BUFFER // 2) % self.app.cell_height == 0:
-            if self.direction == vec(0, 1) or self.direction == vec(0, -1):
+            if self.direction == vec(0, 1) or self.direction == vec(0, -1) or self.direction == vec(0, 0):
                 return True
         return False
 
