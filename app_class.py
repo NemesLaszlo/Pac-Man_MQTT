@@ -16,8 +16,8 @@ class Pac_Man:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
         self.background = pygame.image.load('maze.png')
-        self.cell_width = MAZE_WIDTH // 28
-        self.cell_height = MAZE_HEIGHT // 30
+        self.cell_width = MAZE_WIDTH // COLUMNS
+        self.cell_height = MAZE_HEIGHT // ROWS
         self.walls = []
         self.coins = []
         self.enemies_pos = {}
