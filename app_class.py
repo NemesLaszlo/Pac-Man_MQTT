@@ -59,7 +59,8 @@ class Pac_Man:
                         self.walls.append(vec(x_index, y_index))
                     elif char == "B":
                         pygame.draw.rect(self.background, BLACK,
-                                         (x_index * self.cell_width, y_index * self.cell_height, self.cell_width, self.cell_height))
+                                         (x_index * self.cell_width, y_index * self.cell_height, self.cell_width,
+                                          self.cell_height))
                     elif char == "C":
                         self.coins.append(vec(x_index, y_index))
                     elif char == "P":
@@ -70,7 +71,6 @@ class Pac_Man:
     def make_enemies(self):
         for key, value in self.enemies_pos.items():
             self.enemies.append(Enemy(self, key, value))
-
 
     def draw_grid(self):
         for i in range(WIDTH // self.cell_width):
