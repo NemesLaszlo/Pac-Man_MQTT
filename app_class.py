@@ -2,6 +2,7 @@ import pygame
 import sys
 from settings import *
 from player import Player
+from enemy import Enemy
 
 pygame.init()
 vec = pygame.math.Vector2
@@ -19,11 +20,16 @@ class Pac_Man:
         self.cell_height = MAZE_HEIGHT // 30
         self.walls = []
         self.coins = []
+        self.enemies_pos = []
+        self.enemies = []
         self.player_pos = None
 
-        self.load_maze_and_walls()
+        self.load_maze_and_walls_positions()
 
+        # first parameter -> self is a Pac-Man app class
         self.player = Player(self, self.player_pos)
+
+        self.make_enemies()
 
     def run(self):
         while self.running:
@@ -41,11 +47,11 @@ class Pac_Man:
         pygame.quit()
         sys.exit()
 
-    def load_maze_and_walls(self):
+    def load_maze_and_walls_positions(self):
         self.background = pygame.transform.scale(self.background, (MAZE_WIDTH, MAZE_HEIGHT))
 
         # walls and coins list with coordinates of walls and coins
-        # plus player position from file
+        # plus player position from file and enemy positions
         with open("walls.txt", "r") as file:
             for y_index, line in enumerate(file):
                 for x_index, char in enumerate(line):
@@ -55,6 +61,12 @@ class Pac_Man:
                         self.coins.append(vec(x_index, y_index))
                     elif char == "P":
                         self.player_pos = vec(x_index, y_index)
+                    elif char in ["2", "3", "4", "5"]:
+                        self.enemies_pos.append(vec(x_index, y_index))
+
+    def make_enemies(self):
+        for enemy in self.enemies_pos:
+            self.enemies.append(Enemy(self, enemy))
 
     def draw_grid(self):
         for i in range(WIDTH // self.cell_width):
@@ -122,6 +134,8 @@ class Pac_Man:
 
     def playing_update(self):
         self.player.update()
+        for enemy in self.enemies:
+            enemy.update()
 
     def playing_draw(self):
         self.screen.fill(BLACK)
@@ -134,4 +148,6 @@ class Pac_Man:
         self.draw_text(self.screen, 'HIGH SCORE: 0', [WIDTH // 2 + 60, 0],
                        18, (255, 255, 255), START_FONT, centered=False)
         self.player.draw()
+        for enemy in self.enemies:
+            enemy.draw()
         pygame.display.update()
