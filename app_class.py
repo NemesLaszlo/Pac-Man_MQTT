@@ -1,6 +1,5 @@
 import pygame
 import sys
-import copy
 from settings import *
 from player import Player
 from enemy import Enemy
