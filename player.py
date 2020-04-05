@@ -11,18 +11,14 @@ class Player:
         self.grid_position = position  # position is a player start position from player init
         self.pix_position = self.get_pix_position()
         self.direction = vec(1, 0)
+        self.speed = 2
         self.current_score = 0
         self.stored_direction = None
         self.able_to_move = True
 
-    def get_pix_position(self):
-        # player circle position on the grid map
-        return vec((self.grid_position.x * self.app.cell_width) + TOP_BOTTOM_BUFFER // 2 + self.app.cell_width // 2,
-                   (self.grid_position.y * self.app.cell_height) + TOP_BOTTOM_BUFFER // 2 + self.app.cell_height // 2)
-
     def update(self):
         if self.able_to_move:
-            self.pix_position += self.direction
+            self.pix_position += self.direction * self.speed
         if self.move_next_position():
             if self.stored_direction is not None:
                 self.direction = self.stored_direction
@@ -44,6 +40,11 @@ class Player:
         # pygame.draw.rect(self.app.screen, RED,
         #                   (self.grid_position[0] * self.app.cell_width + TOP_BOTTOM_BUFFER // 2,
         #                    self.grid_position[1] * self.app.cell_height + TOP_BOTTOM_BUFFER // 2, self.app.cell_width, self.app.cell_height), 1)
+
+    def get_pix_position(self):
+        # player circle position on the grid map
+        return vec((self.grid_position.x * self.app.cell_width) + TOP_BOTTOM_BUFFER // 2 + self.app.cell_width // 2,
+                   (self.grid_position.y * self.app.cell_height) + TOP_BOTTOM_BUFFER // 2 + self.app.cell_height // 2)
 
     # by read keyboard movement at this moment
     def move(self, vector_dir):

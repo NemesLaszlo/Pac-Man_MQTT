@@ -20,7 +20,7 @@ class Pac_Man:
         self.cell_height = MAZE_HEIGHT // 30
         self.walls = []
         self.coins = []
-        self.enemies_pos = []
+        self.enemies_pos = {}
         self.enemies = []
         self.player_pos = None
 
@@ -57,16 +57,20 @@ class Pac_Man:
                 for x_index, char in enumerate(line):
                     if char == "1":
                         self.walls.append(vec(x_index, y_index))
+                    elif char == "B":
+                        pygame.draw.rect(self.background, BLACK,
+                                         (x_index * self.cell_width, y_index * self.cell_height, self.cell_width, self.cell_height))
                     elif char == "C":
                         self.coins.append(vec(x_index, y_index))
                     elif char == "P":
                         self.player_pos = vec(x_index, y_index)
                     elif char in ["2", "3", "4", "5"]:
-                        self.enemies_pos.append(vec(x_index, y_index))
+                        self.enemies_pos[char] = vec(x_index, y_index)
 
     def make_enemies(self):
-        for enemy in self.enemies_pos:
-            self.enemies.append(Enemy(self, enemy))
+        for key, value in self.enemies_pos.items():
+            self.enemies.append(Enemy(self, key, value))
+
 
     def draw_grid(self):
         for i in range(WIDTH // self.cell_width):
