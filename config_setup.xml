@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<ArrayOfDevice xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Device>
+    <MacAddress>11:22:44:66</MacAddress>
+    <IOType>Raspberry Pi 3</IOType>
+    <DeviceName>Pac_Man_Game</DeviceName>
+    <CurrentOwner>User1</CurrentOwner>
+    <Components>
+      <Component xsi:type="MultiSwitcher">
+        <Id>5</Id>
+        <DisplayName>Pac-Man</DisplayName>
+        <CurrentValue>
+          <DisplayValue>Fel</DisplayValue>
+          <Value>1</Value>
+        </CurrentValue>
+        <Values>
+          <MultiSwitcherValues>
+            <DisplayValue>Le</DisplayValue>
+            <Value>2</Value>
+          </MultiSwitcherValues>
+          <MultiSwitcherValues>
+            <DisplayValue>Jobb</DisplayValue>
+            <Value>3</Value>
+          </MultiSwitcherValues>
+		  <MultiSwitcherValues>
+            <DisplayValue>Bal</DisplayValue>
+            <Value>4</Value>
+          </MultiSwitcherValues>
+        </Values>
+      </Component>
+    </Components>
+  </Device>
+</ArrayOfDevice>

@@ -9,8 +9,15 @@ vec = pygame.math.Vector2
 
 
 class Pac_Man:
+    """
+    Pac-Man Game main object, with the game parameters, and methods.
+    """
 
     def __init__(self):
+        """
+        Constructor of the Pac-Man Game, with
+        the game parameters.
+        """
         self.running = True
         self.state = 'start'
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -32,6 +39,12 @@ class Pac_Man:
         self.make_enemies()
 
     def run(self):
+        """
+        Main method of the game, where the game running.
+        There are 3 different state (start, playing and game over) every state has 3 method
+        which are the event handler, updater and the drawing section.
+        """
+
         while self.running:
             if self.state == 'start':
                 self.start_events()
@@ -52,6 +65,14 @@ class Pac_Man:
         sys.exit()
 
     def load_maze_and_walls_positions(self):
+        """
+        Background picture handler, with the scaling and build the real map about the walls text file,
+        where the 'B' is the game to the enemy ghosts (black rectangles to the picture)
+        '1' is the parts of the wall,
+        'C' the coins on the roads,
+        'P' the player starting position
+        numbers are the enemies (position).
+        """
         self.background = pygame.transform.scale(self.background, (MAZE_WIDTH, MAZE_HEIGHT))
 
         # walls and coins list with coordinates of walls and coins
@@ -73,10 +94,16 @@ class Pac_Man:
                         self.enemies_pos[char] = [x_index, y_index]
 
     def make_enemies(self):
+        """
+        Enemy creation, using the datas from the walls text. (enemies_pos dictionary)
+        """
         for key, value in self.enemies_pos.items():
             self.enemies.append(Enemy(self, key, vec(value)))
 
     def remove_life(self):
+        """
+        Player life handler, if there is no more life the game is over otherwise the game restarting.
+        """
         self.player.lives -= 1
         if self.player.lives == 0:
             self.state = "game over"
@@ -90,6 +117,10 @@ class Pac_Man:
                 enemy.direction *= 0
 
     def draw_grid(self):
+        """
+        Grid drawing to see the actual map (background) segments, situations etc.
+        (not in develop status, we use only the background image).
+        """
         for i in range(WIDTH // self.cell_width):
             pygame.draw.line(self.background, GREY, (i * self.cell_width, 0),
                              (i * self.cell_width, HEIGHT))
@@ -99,18 +130,29 @@ class Pac_Man:
                              (WIDTH, i * self.cell_height))
 
     def draw_walls(self):
+        """
+        Wall drawing to see the actual map (background) segments, situations etc.
+        (not in develop status, we use only the background image).
+        Check the movement and wall positions in the player class. (can_move)
+        """
         for wall in self.walls:
             pygame.draw.rect(self.background, (255, 255, 255),
                              (wall.x * self.cell_width,
                               wall.y * self.cell_height, self.cell_width, self.cell_height))
 
     def draw_coins(self):
+        """
+        Coin drawing to the map. (screen)
+        """
         for coin in self.coins:
             pygame.draw.circle(self.screen, (124, 123, 7),
                                (int(coin.x * self.cell_width) + self.cell_width // 2 + TOP_BOTTOM_BUFFER // 2,
                                 int(coin.y * self.cell_height) + self.cell_height // 2 + TOP_BOTTOM_BUFFER // 2), 5)
 
     def draw_text(self, screen, text, position, size, color, font_name, centered=False):
+        """
+        Custom text drawing and customization helper method.
+        """
         font = pygame.font.SysFont(font_name, size)
         text_word = font.render(text, False, color)
         text_word_size = text_word.get_size()
@@ -120,6 +162,9 @@ class Pac_Man:
         screen.blit(text_word, position)
 
     def reset(self):
+        """
+        Game reset to the restart in the game over event.
+        """
         self.player.lives = 3
         self.player.current_score = 0
         self.player.grid_position = vec(self.player.starting_position)
@@ -140,6 +185,9 @@ class Pac_Man:
         self.state = "playing"
 
     def start_events(self):
+        """
+        Start event, to start the game with state changing or quit.
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -150,6 +198,9 @@ class Pac_Man:
         pass
 
     def start_draw(self):
+        """
+        Start event menu drawing with the start informations.
+        """
         self.screen.fill(BLACK)
         self.draw_text(self.screen, 'PUSH SPACE TO START', [WIDTH // 2, HEIGHT // 2],
                        START_TEXT_SIZE, (170, 132, 58), START_FONT, centered=True)
@@ -158,6 +209,9 @@ class Pac_Man:
         pygame.display.update()
 
     def playing_events(self):
+        """
+        Play event, with the quit option and the movement handling sections.
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -172,6 +226,10 @@ class Pac_Man:
                     self.player.move(vec(0, 1))
 
     def playing_update(self):
+        """
+        Playing state updating player and enemies update.
+        If enemy catch the player -> remove_file and game over handling.
+        """
         self.player.update()
         for enemy in self.enemies:
             enemy.update()
@@ -181,6 +239,9 @@ class Pac_Man:
                 self.remove_life()
 
     def playing_draw(self):
+        """
+        Gameplay section drawing section, with the map, coins, player and enemies visualization.
+        """
         self.screen.fill(BLACK)
         self.screen.blit(self.background, (TOP_BOTTOM_BUFFER // 2, TOP_BOTTOM_BUFFER // 2))
         # self.draw_grid()  # draw the grid on the picture map
@@ -194,6 +255,9 @@ class Pac_Man:
         pygame.display.update()
 
     def game_over_events(self):
+        """
+        Game over event to chose, start again or quit.
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -206,6 +270,9 @@ class Pac_Man:
         pass
 
     def game_over_draw(self):
+        """
+        Game over menu drawing section, restart or quit.
+        """
         self.screen.fill(BLACK)
         self.draw_text(self.screen, 'GAME OVER', [WIDTH // 2, 100],
                        36, RED, START_FONT, centered=True)

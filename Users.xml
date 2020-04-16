@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<ArrayOfUser xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <User>
+    <UserName>User1</UserName>
+    <Password>123</Password>
+    <Email />
+    <FirstName>Valaki</FirstName>
+    <LastName>Mr.</LastName>
+    <Device>false</Device>
+    <Administrator>true</Administrator>
+  </User>
+  <User>
+    <UserName>11:22:33:44</UserName>
+    <Password>123</Password>
+    <Email />
+    <FirstName>Ő</FirstName>
+    <LastName>Mrs.</LastName>
+    <Device>true</Device>
+    <Administrator>false</Administrator>
+  </User>
+    <User>
+    <UserName>11:22:44:66</UserName>
+    <Password>123</Password>
+    <Email />
+    <FirstName>Game</FirstName>
+    <LastName>Pac-Man</LastName>
+    <Device>true</Device>
+    <Administrator>false</Administrator>
+  </User>
+  <User>
+    <UserName>Valami</UserName>
+    <Password>Asd</Password>
+    <Email />
+    <FirstName />
+    <LastName />
+    <Device>false</Device>
+    <Administrator>false</Administrator>
+  </User>
+  <User>
+    <UserName>Valamiasdj</UserName>
+    <Password>Asd</Password>
+    <Email />
+    <FirstName />
+    <LastName />
+    <Device>false</Device>
+    <Administrator>false</Administrator>
+  </User>
+  <User>
+    <UserName />
+    <Password />
+    <Email />
+    <FirstName />
+    <LastName />
+    <Device>false</Device>
+    <Administrator>false</Administrator>
+  </User>
+</ArrayOfUser>

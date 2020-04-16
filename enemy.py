@@ -6,8 +6,15 @@ vec = pygame.math.Vector2
 
 
 class Enemy:
+    """
+    Enemy class with the methods and parameters.
+    """
 
     def __init__(self, app, key, position):
+        """
+        Constructor of the Enemy, with
+        the parameters.
+        """
         self.app = app
         self.key = key
         self.grid_position = position
@@ -20,6 +27,9 @@ class Enemy:
         self.speed = self.set_speed()
 
     def update(self):
+        """
+        Enemy move check and update to work correctly.
+        """
         self.target = self.set_target()
         if self.target != self.grid_position:
             self.pix_position += self.direction * self.speed
@@ -31,6 +41,9 @@ class Enemy:
         self.grid_position[1] = (self.pix_position[1] - TOP_BOTTOM_BUFFER + self.app.cell_height // 2) // self.app.cell_height + 1
 
     def draw(self):
+        """
+        Actual enemy version drawing about the number value from the walls text. (color)
+        """
         pygame.draw.circle(self.app.screen, self.color,
                            (int(self.pix_position.x), int(self.pix_position.y)), self.app.cell_width // 2)
 
@@ -40,6 +53,10 @@ class Enemy:
                    (self.grid_position.y * self.app.cell_height) + TOP_BOTTOM_BUFFER // 2 + self.app.cell_height // 2)
 
     def set_target(self):
+        """
+        Enemy target settings by the type/personality of the enemy.
+        "speedy" and "slow" chasing the player, the others get random positions to go there.
+        """
         if self.personality == "speedy" or self.personality == "slow":
             return self.app.player.grid_position
         else:
@@ -53,6 +70,9 @@ class Enemy:
                 return vec(COLUMNS - 2, ROWS - 2)
 
     def set_speed(self):
+        """
+        Enemy speed settings by the type/personality of the enemy.
+        """
         if self.personality in ["speedy", "scared"]:
             speed = 2
         else:
@@ -60,6 +80,10 @@ class Enemy:
         return speed
 
     def set_color(self):
+        """
+        Enemy speed settings by the number from the walls text file.
+        (We going to set the personality about the numbers which comes form the text file.)
+        """
         if self.key == "2":
             return (43, 78, 203)
         if self.key == "3":
@@ -70,6 +94,9 @@ class Enemy:
             return (215, 159, 33)
 
     def set_personality(self):
+        """
+        Enemy personality settings by the number from the walls text file.
+        """
         if self.key == "2":
             return "speedy"
         if self.key == "3":
@@ -81,6 +108,9 @@ class Enemy:
 
     # move next position check
     def move_next_position(self):
+        """
+        Moving to the next position checker.
+        """
         if int(self.pix_position.x + TOP_BOTTOM_BUFFER // 2) % self.app.cell_width == 0:
             if self.direction == vec(1, 0) or self.direction == vec(-1, 0) or self.direction == vec(0, 0):
                 return True
@@ -90,6 +120,9 @@ class Enemy:
         return False
 
     def move(self):
+        """
+        Moving event.
+        """
         if self.personality == "random":
             self.direction = self.get_random_direction()
         if self.personality == "slow":
@@ -100,6 +133,9 @@ class Enemy:
             self.direction = self.get_path_direction(self.target)
 
     def get_random_direction(self):
+        """
+        Moving random positions. ("random" personality)
+        """
         while True:
             number = random.randint(-2, 1)
             if number == -2:
@@ -116,17 +152,27 @@ class Enemy:
         return vec(x_dir, y_dir)
 
     def get_path_direction(self, target):
+        """
+        Get the path to the moving to the target. Looking for the next cell on the grid to the target position.
+        maybe it is a random position maybe it is the player position for the chase.
+        """
         next_cell = self.find_next_cell_in_path(target)
         x_dir = next_cell[0] - self.grid_position[0]
         y_dir = next_cell[1] - self.grid_position[1]
         return vec(x_dir, y_dir)
 
     def find_next_cell_in_path(self, target):
+        """
+        Breadth First Search calling to get the "next cell to the target".
+        """
         path = self.breadth_first_search([int(self.grid_position.x), int(self.grid_position.y)],
                                          [int(target[0]), int(target[1])])
         return path[1]
 
     def breadth_first_search(self, start, target):
+        """
+        Breadth First Search for movements ti the target.
+        """
         grid = [[0 for x in range(COLUMNS)] for x in range(ROWS)]
 
         for cell in self.app.walls:
