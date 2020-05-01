@@ -1,5 +1,7 @@
+import threading
 import pygame
 import sys
+import xml
 from settings import *
 from player import Player
 from enemy import Enemy
@@ -8,16 +10,26 @@ pygame.init()
 vec = pygame.math.Vector2
 
 
+def thread_function(client):
+    """
+    Keepalive topic publisher, in very 30sec to the broker.
+    """
+    threading.Timer(30.0, thread_function).start()
+    client.publish("serverCommand/keepalive", "0")
+    print("Message Sent. (keepalive)")
+
+
 class Pac_Man:
     """
     Pac-Man Game main object, with the game parameters, and methods.
     """
 
-    def __init__(self):
+    def __init__(self, client):
         """
         Constructor of the Pac-Man Game, with
         the game parameters.
         """
+        # self.client = client
         self.running = True
         self.state = 'start'
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -37,6 +49,19 @@ class Pac_Man:
         self.player = Player(self, vec(self.player_pos))
 
         self.make_enemies()
+
+        # keepalive topic writer thread in every 30sec, to the broker (this device is online)
+        # keepalive_thread = threading.Thread(target=thread_function, args=(self.client,))
+        # keepalive_thread.start()
+
+    def send_config_xml_to_broker(self):
+        """
+        Read the config xml, convert to string, and send it to the mqtt broker.
+        """
+        xmlObject = xml.dom.minidom.parse("config_setup.xml")
+        pretty_xml_as_string = xmlObject.toprettyxml()
+        self.client.publish("users/everyone/inbox/server/deviceList", pretty_xml_as_string)
+        print("XML config sent.")
 
     def run(self):
         """
@@ -224,6 +249,11 @@ class Pac_Man:
                     self.player.move(vec(0, -1))
                 if event.key == pygame.K_DOWN:
                     self.player.move(vec(0, 1))
+
+        # self.client.subscribe("devices/11:22:44:66/inbox/User1/function/1")
+        # self.client.subscribe("devices/11:22:44:66/inbox/User1/function/2")
+        # self.client.subscribe("devices/11:22:44:66/inbox/User1/function/3")
+        # self.client.subscribe("devices/11:22:44:66/inbox/User1/function/4")
 
     def playing_update(self):
         """
